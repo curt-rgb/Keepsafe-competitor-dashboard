@@ -1,601 +1,123 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>KeepSafe Competitor Analysis Dashboard</title>
 <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%);
-            color: white;
-            padding: 40px 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.95;
-        }
-
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-card {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: 700;
-            color: #00b4d8;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        .controls {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: #00b4d8;
-        }
-
-        select {
-            padding: 12px 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            background-color: white;
-            transition: border-color 0.3s;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #00b4d8;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background-color: #00b4d8;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #0096b8;
-            box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
-        }
-
-        .btn-secondary {
-            background-color: #e8f4f8;
-            color: #1a2744;
-        }
-
-        .btn-secondary:hover {
-            background-color: #d0ebf2;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px 40px;
-        }
-
-        .locations-grid {
-            display: grid;
-            gap: 20px;
-        }
-
-        .location-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-
-        .location-card:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-header {
-            background-color: #1a2744;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .card-header:hover {
-            background-color: #0d1520;
-        }
-
-        .card-title-section {
-            flex: 1;
-        }
-
-        .facility-name {
-            font-size: 1.4em;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .facility-meta {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            font-size: 0.95em;
-        }
-
-        .state-badge {
-            display: inline-block;
-            background-color: #00b4d8;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .rating-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.9em;
-        }
-
-        .deal-badge {
-            display: inline-block;
-            background-color: #f59e0b;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }
-
-        .expand-icon {
-            font-size: 1.5em;
-            transition: transform 0.3s;
-        }
-
-        .location-card.expanded .expand-icon {
-            transform: rotate(180deg);
-        }
-
-        .card-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .location-card.expanded .card-body {
-            max-height: 10000px;
-            transition: max-height 0.5s ease-in;
-        }
-
-        .card-body-content {
-            padding: 30px;
-        }
-
-        .positioning-box {
-            background-color: #f9fafb;
-            border-left: 5px solid #00b4d8;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            font-size: 1em;
-            line-height: 1.7;
-        }
-
-        .positioning-box.warning {
-            border-left-color: #ef4444;
-            background-color: #fef2f2;
-        }
-
-        .positioning-box.strong {
-            border-left-color: #10b981;
-            background-color: #f0fdf4;
-        }
-
-        .positioning-label {
-            font-weight: 700;
-            color: #1a2744;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-size: 0.85em;
-            letter-spacing: 0.5px;
-        }
-
-        .positioning-box.warning .positioning-label {
-            color: #991b1b;
-        }
-
-        .positioning-box.strong .positioning-label {
-            color: #065f46;
-        }
-
-        .sentiment-section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #1a2744;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .sentiment-text {
-            color: #555;
-            line-height: 1.7;
-            padding: 15px;
-            background-color: #f9fafb;
-            border-radius: 8px;
-        }
-
-        .pricing-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.95em;
-        }
-
-        .pricing-table th {
-            background-color: #1a2744;
-            color: white;
-            padding: 14px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .pricing-table td {
-            padding: 14px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .pricing-table tr:nth-child(even) {
-            background-color: #f9fafb;
-        }
-
-        .price-cell {
-            font-size: 1.15em;
-            font-weight: 700;
-            color: #1a2744;
-        }
-
-        .price-verified {
-            color: #10b981;
-        }
-
-        .price-quote {
-            color: #6b7280;
-            font-size: 0.9em;
-            font-style: italic;
-        }
-
-        .competitors-section {
-            margin-top: 30px;
-        }
-
-        .competitors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .competitor-card {
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
-
-        .competitor-card:hover {
-            border-color: #00b4d8;
-            box-shadow: 0 2px 8px rgba(0, 180, 216, 0.1);
-        }
-
-        .competitor-name {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: #1a2744;
-            margin-bottom: 10px;
-        }
-
-        .competitor-name a {
-            color: #00b4d8;
-            text-decoration: none;
-        }
-
-        .competitor-name a:hover {
-            text-decoration: underline;
-        }
-
-        .competitor-meta {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            font-size: 0.9em;
-        }
-
-        .competitor-rating {
-            background-color: #eff6ff;
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: #1e40af;
-            font-weight: 600;
-        }
-
-        .competitor-rating:empty::before {
-            content: "No rating";
-            color: #999;
-            font-weight: normal;
-        }
-
-        .competitor-reviews {
-            background-color: #f0fdf4;
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: #166534;
-            font-weight: 600;
-        }
-
-        .competitor-reviews:empty::before {
-            content: "No reviews";
-            color: #999;
-            font-weight: normal;
-        }
-
-        .competitor-deal {
-            background-color: #fef3c7;
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: #92400e;
-            font-weight: 600;
-            font-size: 0.85em;
-        }
-
-        .competitor-sentiment {
-            color: #555;
-            font-size: 0.9em;
-            line-height: 1.6;
-            padding: 12px;
-            background-color: white;
-            border-radius: 6px;
-            border-left: 3px solid #d1d5db;
-        }
-
-        .footer {
-            background-color: #1a2744;
-            color: white;
-            padding: 40px 20px;
-            margin-top: 50px;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .footer h3 {
-            margin-bottom: 15px;
-            font-size: 1.1em;
-        }
-
-        .footer p {
-            opacity: 0.85;
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-
-        .methodology {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .methodology-section h4 {
-            color: #00b4d8;
-            margin-bottom: 10px;
-            font-size: 1em;
-        }
-
-        .methodology-section ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .methodology-section li {
-            padding-left: 20px;
-            position: relative;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .methodology-section li:before {
-            content: "\2022  ";
-            color: #00b4d8;
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            select {
-                width: 100%;
-            }
-
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .competitors-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .facility-meta {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .stats-bar {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .no-results h3 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #666;
-        }
-
-        .sentiment-text span {
-            display: block;
-            margin-top: 6px;
-            font-size: 0.95em;
-        }
-
-.price-better{background:#d4edda!important;color:#155724!important;font-weight:600}
-.price-worse{background:#f8d7da!important;color:#721c24!important;font-weight:600}
-.price-same{background:#fff3cd!important;color:#856404!important;font-weight:600}
-.price-cell{transition:background .2s}
-.price-legend{display:flex;gap:16px;padding:8px 14px;background:#f8f9fa;border-radius:6px;margin-bottom:10px;font-size:.82em;flex-wrap:wrap;border:1px solid #e9ecef}
-.price-legend-item{display:flex;align-items:center;gap:5px}
-.price-legend-swatch{width:14px;height:14px;border-radius:3px;display:inline-block}
-.sw-g{background:#d4edda;border:1px solid #c3e6cb}
-.sw-r{background:#f8d7da;border:1px solid #f5c6cb}
-.sw-y{background:#fff3cd;border:1px solid #ffeeba}
-.data-timestamp{font-size:.78em;color:#6c757d;margin-top:6px;font-style:italic}
-
-.floor-tag{font-size:.7em;font-weight:700;padding:1px 4px;border-radius:3px;margin-right:2px;display:inline-block}
-.floor-upper{background:#dbe5f1;color:#2a5599}
-.floor-ground{background:#e2efda;color:#375623}
-.floor-single{background:#fff2cc;color:#7f6000}
-
-.promo-tag {
-    font-size: 0.75em;
-    color: #d32f2f;
-    font-weight: 600;
-    margin-top: 2px;
-    line-height: 1.2;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background-color: #f5f7fa; color: #333; line-height: 1.6; }
+.header { background: linear-gradient(135deg, #1a2744 0%, #0d1520 100%); color: white; padding: 40px 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.header-content { max-width: 1400px; margin: 0 auto; }
+.header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 700; }
+.header p { font-size: 1.1em; opacity: 0.95; }
+.stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); }
+.stat-card { text-align: center; }
+.stat-number { font-size: 2em; font-weight: 700; color: #00b4d8; margin-bottom: 5px; }
+.stat-label { font-size: 0.9em; opacity: 0.8; }
+.controls { max-width: 1400px; margin: 30px auto; padding: 0 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+.search-box { flex: 1; min-width: 250px; padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 1em; transition: border-color 0.3s; }
+.search-box:focus { outline: none; border-color: #00b4d8; }
+select { padding: 12px 16px; border: 2px solid #ddd; border-radius: 8px; font-size: 1em; cursor: pointer; background-color: white; transition: border-color 0.3s; }
+select:focus { outline: none; border-color: #00b4d8; }
+.btn { padding: 12px 20px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+.btn-primary { background-color: #00b4d8; color: white; }
+.btn-primary:hover { background-color: #0096b8; box-shadow: 0 2px 8px rgba(0,180,216,0.3); }
+.btn-secondary { background-color: #e8f4f8; color: #1a2744; }
+.btn-secondary:hover { background-color: #d0ebf2; }
+.container { max-width: 1400px; margin: 0 auto; padding: 0 20px 40px; }
+.locations-grid { display: grid; gap: 20px; }
+.location-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s; }
+.location-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.card-header { background-color: #1a2744; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+.card-header:hover { background-color: #0d1520; }
+.card-title-section { flex: 1; }
+.facility-name { font-size: 1.4em; font-weight: 700; margin-bottom: 8px; }
+.facility-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 0.95em; }
+.state-badge { display: inline-block; background-color: #00b4d8; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+.rating-badge { display: inline-block; background-color: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.85em; }
+.expand-icon { font-size: 1.5em; transition: transform 0.3s; }
+.location-card.expanded .expand-icon { transform: rotate(180deg); }
+.card-body { display: none; padding: 0; }
+.location-card.expanded .card-body { display: block; }
+.card-body-content { padding: 30px; }
+.positioning-box { background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-left: 4px solid #00b4d8; padding: 20px; border-radius: 0 8px 8px 0; margin-bottom: 30px; }
+.positioning-box.strong { border-left-color: #10b981; background: linear-gradient(135deg, #ecfdf5, #d1fae5); }
+.positioning-label { font-weight: 700; color: #1a2744; text-transform: uppercase; font-size: 0.8em; letter-spacing: 1px; margin-bottom: 10px; }
+.positioning-box p { color: #374151; font-size: 0.95em; }
+.sentiment-section { margin-bottom: 30px; }
+.section-title { font-size: 1.15em; font-weight: 700; color: #1a2744; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+.sentiment-text { color: #555; font-size: 0.95em; padding: 12px; background-color: #f9fafb; border-radius: 6px; }
+.pricing-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+.pricing-table th { background-color: #1a2744; color: white; padding: 12px; text-align: left; font-weight: 600; }
+.pricing-table td { padding: 12px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+.pricing-table tr:hover { background-color: #f9fafb; }
+.competitors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+.competitor-card { background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; transition: all 0.3s; }
+.competitor-card:hover { border-color: #00b4d8; box-shadow: 0 2px 8px rgba(0,180,216,0.1); }
+.competitor-name { font-size: 1.1em; font-weight: 700; color: #1a2744; margin-bottom: 10px; }
+.competitor-name a { color: #00b4d8; text-decoration: none; }
+.competitor-name a:hover { text-decoration: underline; }
+.competitor-meta { display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; font-size: 0.9em; }
+.competitor-rating { background-color: #eff6ff; padding: 4px 10px; border-radius: 6px; color: #1e40af; font-weight: 600; }
+.competitor-deal { background-color: #fef3c7; padding: 4px 10px; border-radius: 6px; color: #92400e; font-weight: 600; font-size: 0.85em; }
+.competitor-sentiment { color: #555; font-size: 0.9em; line-height: 1.6; padding: 12px; background-color: white; border-radius: 6px; border-left: 3px solid #d1d5db; }
+.footer { background-color: #1a2744; color: white; padding: 40px 20px; margin-top: 50px; }
+.footer-content { max-width: 1400px; margin: 0 auto; }
+.footer h3 { margin-bottom: 15px; font-size: 1.1em; }
+.footer p { opacity: 0.85; line-height: 1.7; margin-bottom: 10px; }
+.methodology { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; }
+.methodology-section h4 { color: #00b4d8; margin-bottom: 10px; font-size: 1em; }
+.methodology-section ul { list-style: none; padding-left: 0; }
+.methodology-section li { padding-left: 20px; position: relative; opacity: 0.9; margin-bottom: 8px; }
+.methodology-section li::before { content: "\2022  "; color: #00b4d8; font-weight: bold; position: absolute; left: 0; }
+.price-cell { transition: background .2s; }
+.price-legend { display: flex; gap: 16px; padding: 8px 14px; background: #f8f9fa; border-radius: 6px; margin-bottom: 10px; font-size: .82em; flex-wrap: wrap; border: 1px solid #e9ecef; }
+.price-legend-item { display: flex; align-items: center; gap: 5px; }
+.price-legend-swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+.sw-g { background: #d4edda; border: 1px solid #c3e6cb; }
+.data-timestamp { font-size: .78em; color: #6c757d; margin-top: 6px; font-style: italic; }
+.floor-tag { font-size: .7em; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-right: 2px; display: inline-block; }
+.floor-upper { background: #dbe5f1; color: #2a5599; }
+.floor-ground { background: #e2efda; color: #375623; }
+.floor-single { background: #fff2cc; color: #7f6000; }
+.promo-tag { font-size: 0.78em; color: #d32f2f; font-weight: 600; display: inline; margin-left: 4px; }
+.hidden { display: none; }
+.no-results { text-align: center; padding: 60px 20px; color: #999; }
+.no-results h3 { font-size: 1.5em; margin-bottom: 10px; color: #666; }
+@media (max-width: 768px) {
+    .header h1 { font-size: 1.8em; }
+    .controls { flex-direction: column; }
+    .search-box { width: 100%; }
+    select { width: 100%; }
+    .card-header { flex-direction: column; align-items: flex-start; }
+    .competitors-grid { grid-template-columns: 1fr; }
+    .facility-meta { flex-direction: column; align-items: flex-start; }
+    .stats-bar { grid-template-columns: 1fr; }
+    .pricing-table { font-size: 0.8em; }
 }
 </style>
 </head>
 <body>
 <div class="header">
 <div class="header-content">
-<h1>KeepSafe Competitor Analysis Dashboard</h1><div class="data-timestamp">Prices scraped: April 17, 2026</div>
+<h1>KeepSafe Competitor Analysis Dashboard</h1>
+<div class="data-timestamp">Prices scraped: April 17, 2026</div>
 <p>Comprehensive competitive positioning across KeepSafe's 8 target locations</p>
 <div class="stats-bar">
 <div class="stat-card">
 <div class="stat-number">8</div>
 <div class="stat-label">Locations Analyzed</div></div>
 <div class="stat-card">
-<div class="stat-number">21</div>
+<div class="stat-number">24</div>
 <div class="stat-label">Competitors Identified</div></div>
 <div class="stat-card">
-<div class="stat-number">52</div>
+<div class="stat-number">99</div>
 <div class="stat-label">Prices Collected</div></div>
 <div class="stat-card">
-<div class="stat-number">6</div>
+<div class="stat-number">7</div>
 <div class="stat-label">Quote-Only Competitors</div></div></div></div></div>
+
 <div class="controls">
 <input class="search-box" id="searchInput" placeholder="Search locations, competitors..." type="text"/>
 <select id="stateFilter">
@@ -607,72 +129,369 @@
 </select>
 <button class="btn btn-secondary" onclick="expandAll()">Expand All</button>
 <button class="btn btn-secondary" onclick="collapseAll()">Collapse All</button></div>
+
 <div class="container">
 <div class="locations-grid" id="locationsGrid">
 
-<!-- Waroona, WA -->
-<div class="location-card" data-facility="waroona" data-state="WA">
+<!-- Bayswater, WA -->
+<div class="location-card" data-facility="bayswater" data-state="WA">
 <div class="card-header" onclick="toggleCard(this)">
 <div class="card-title-section">
-<div class="facility-name">Waroona, WA</div>
+<div class="facility-name">Bayswater, WA</div>
 <div class="facility-meta">
 <span class="state-badge">WA</span>
-<span class="rating-badge">Prices Updated</span></div></div>
+<span class="rating-badge">3+ Competitors</span></div></div>
 <div class="expand-icon">&#9660;</div></div>
 <div class="card-body">
 <div class="card-body-content">
 <div class="positioning-box">
 <div class="positioning-label">Competitive Positioning Summary</div>
-<p>Waroona is a smaller regional market with limited competition. Lock 'n' Store offers quote-only pricing, while National Storage Mandurah (nearby) has published rates and is offering 50% off first month promos across unit sizes. KeepSafe can differentiate with transparent pricing and competitive first-month offers to capture this underserved market.</p></div>
+<p>Bayswater is a competitive Perth metro market with multiple established operators. National Storage has two nearby facilities (Bayswater and Embleton), Storage King operates from Bassendean, and Airport Self Storage serves the area. KeepSafe Belmont (~5km away) also competes for the same customer base. KeepSafe Bayswater's pricing sits mid-range, with strong positioning on smaller units.</p></div>
 <div class="sentiment-section">
 <div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $133 to $499/mo at Waroona. Competitive positioning on ground floor units across all size ranges (4.5m&#178; to 30m&#178;).</div></div>
+<div class="sentiment-text">KeepSafe offers units from $54 to $494/mo at Bayswater. All units are ground floor access.</div></div>
 <div class="sentiment-section">
 <div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div></div><table class="pricing-table">
 <thead>
 <tr>
 <th>Unit Size</th>
 <th>Area</th>
 <th>KeepSafe</th>
-<th>National Storage Mandurah</th>
-<th>Lock 'n' Store</th>
+<th>National Storage Bayswater</th><th>National Storage Embleton</th><th>Storage King Bassendean</th><th>KeepSafe Belmont</th><th>Airport Self Storage</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$249/mo</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$324/mo <span style="font-size:0.85em;">sale $162</span><div class="promo-tag">50% off 1st mo</div></td>
-<td class="price-cell price-quote">Quote only</td>
+<td><strong>1x1m</strong></td>
+<td>1m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$54/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
 </tr>
 <tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$269/mo</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$377/mo <span style="font-size:0.85em;">sale $188</span><div class="promo-tag">50% off 1st mo</div></td>
-<td class="price-cell price-quote">Quote only</td>
+<td><strong>1.5x1.5m</strong></td>
+<td>2.25m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$118/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>1.5x3m</strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$180/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-upper">U</span>$130/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$149/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$112/mo</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x3m</strong></td>
+<td>9m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$272/mo</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$244/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-upper">U</span>$205/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$257/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$165/mo</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3.5x3.6m</strong></td>
+<td>12.6m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$341/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$441/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$469/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$279/mo</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x7m</strong></td>
+<td>21m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$494/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$313/mo</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$340/mo <span class="promo-tag">25% off 1st mo</span></td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
 </tr>
 </tbody>
 </table></div>
 <div class="competitors-section">
-<div class="section-title">Competitor Landscape (2 competitors)</div>
+<div class="section-title">Competitor Landscape (5 competitors)</div>
 <div class="competitors-grid">
 <div class="competitor-card">
-<div class="competitor-name"><a href="https://www.locknstore.com.au/" rel="noopener noreferrer" target="_blank">Lock 'n' Store</a></div>
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/bayswater/" rel="noopener noreferrer" target="_blank">National Storage Bayswater</a></div>
 <div class="competitor-meta">
-<span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
-<div class="competitor-sentiment">Multiple locations in Western Australia. No published pricing available.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Mandurah</a></div>
-<div class="competitor-meta">
+
 <span class="competitor-deal">50% off 1st Month</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$130-$377/mo</span></div>
-<div class="competitor-sentiment">Published pricing with aggressive first-month promotions. Nearest established competitor with transparent rates.</div></div></div></div></div></div></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$130-$340/mo</span></div>
+<div class="competitor-sentiment">Major national operator with Bayswater facility. Published pricing with aggressive first-month promotions.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/embleton/" rel="noopener noreferrer" target="_blank">National Storage Embleton</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$130-$320/mo</span></div>
+<div class="competitor-sentiment">Second nearby National Storage facility serving the eastern suburbs corridor.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Bassendean</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">1st Month Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$149-$469/mo</span></div>
+<div class="competitor-sentiment">Established franchise operator with first-month-free promotions. Strong brand presence in Perth metro.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://airportselfstorage.com.au/" rel="noopener noreferrer" target="_blank">Airport Self Storage</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">Quote based</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Located near Perth Airport. Quote-only pricing model. Serves Bayswater and surrounding suburbs.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://keepsafestorage.com.au/book-a-unit/locations/belmont/units/" rel="noopener noreferrer" target="_blank" style="color:#00695c">KeepSafe Belmont</a> <span style="font-size:0.7em;background:#e0f7fa;color:#00695c;padding:2px 6px;border-radius:4px;margin-left:4px">KeepSafe</span></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">~5km away</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$81-$313/mo</span></div>
+<div class="competitor-sentiment">Nearby KeepSafe facility approximately 5km away. Lower pricing on medium-large units may attract price-sensitive customers from Bayswater catchment.</div></div>
+</div></div></div></div></div>
+
+<!-- Belmont, WA -->
+<div class="location-card" data-facility="belmont" data-state="WA">
+<div class="card-header" onclick="toggleCard(this)">
+<div class="card-title-section">
+<div class="facility-name">Belmont, WA</div>
+<div class="facility-meta">
+<span class="state-badge">WA</span>
+<span class="rating-badge">3+ Competitors</span></div></div>
+<div class="expand-icon">&#9660;</div></div>
+<div class="card-body">
+<div class="card-body-content">
+<div class="positioning-box">
+<div class="positioning-label">Competitive Positioning Summary</div>
+<p>Belmont is a well-served Perth market with four direct competitors plus KeepSafe Bayswater nearby (~5km). Airport Self Storage, Catts Storage, Storage King and National Storage all compete locally. KeepSafe Belmont offers competitive pricing especially on mid-range units, with ground floor access across all sizes.</p></div>
+<div class="sentiment-section">
+<div class="section-title">KeepSafe Pricing</div>
+<div class="sentiment-text">KeepSafe offers units from $81 to $313/mo at Belmont. All units are ground floor access.</div></div>
+<div class="sentiment-section">
+<div class="section-title">Pricing Comparison</div>
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div></div><table class="pricing-table">
+<thead>
+<tr>
+<th>Unit Size</th>
+<th>Area</th>
+<th>KeepSafe</th>
+<th>National Storage Belmont</th><th>Storage King Belmont</th><th>KeepSafe Bayswater</th><th>Airport Self Storage</th><th>Catts Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1x1m</strong></td>
+<td>1m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$81/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>1.5x1.5m</strong></td>
+<td>2.25m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$83/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>1.5x2.5m</strong></td>
+<td>3.75m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$113/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>1.5x3m</strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$112/mo</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$153/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$119/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$180/mo</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>2.5x3.5m</strong></td>
+<td>8.75m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$165/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x4.5m</strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$161/mo</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$320/mo <span class="promo-tag">25% off 1st mo</span></td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$279/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$409/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$441/mo</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3.5x6m</strong></td>
+<td>21m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$313/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$494/mo</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>9m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$207/mo <span class="promo-tag">1st mo free</span></td><td class="price-cell"><span class="floor-tag" style="background:#e0f7fa;color:#00695c">G</span>$272/mo</td><td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+</tbody>
+</table></div>
+<div class="competitors-section">
+<div class="section-title">Competitor Landscape (5 competitors)</div>
+<div class="competitors-grid">
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://airportselfstorage.com.au/" rel="noopener noreferrer" target="_blank">Airport Self Storage</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">Quote based</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Located near Perth Airport serving Belmont and Ascot areas. No published pricing &mdash; quote-only model.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.cattsstorage.com.au/" rel="noopener noreferrer" target="_blank">Catts Storage</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">Quote based</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Local Rivervale operator serving the Belmont area. Quote-only pricing with no online rates published.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/belmont/" rel="noopener noreferrer" target="_blank">National Storage Belmont</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$153-$320/mo</span></div>
+<div class="competitor-sentiment">National operator with Belmont facility. Published pricing with aggressive first-month promotions.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Belmont</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">1st Month Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$119-$409/mo</span></div>
+<div class="competitor-sentiment">Major franchise with Belmont location. First-month-free promotions on selected units.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://keepsafestorage.com.au/book-a-unit/locations/bayswater/units/" rel="noopener noreferrer" target="_blank" style="color:#00695c">KeepSafe Bayswater</a> <span style="font-size:0.7em;background:#e0f7fa;color:#00695c;padding:2px 6px;border-radius:4px;margin-left:4px">KeepSafe</span></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">~5km away</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$54-$494/mo</span></div>
+<div class="competitor-sentiment">Nearby KeepSafe facility approximately 5km away. Higher pricing than Belmont on most comparable sizes.</div></div>
+</div></div></div></div></div>
+
+<!-- Coburg North, VIC -->
+<div class="location-card" data-facility="coburg" data-state="VIC">
+<div class="card-header" onclick="toggleCard(this)">
+<div class="card-title-section">
+<div class="facility-name">Coburg North, VIC</div>
+<div class="facility-meta">
+<span class="state-badge">VIC</span>
+<span class="rating-badge">5 Competitors</span></div></div>
+<div class="expand-icon">&#9660;</div></div>
+<div class="card-body">
+<div class="card-body-content">
+<div class="positioning-box">
+<div class="positioning-label">Competitive Positioning Summary</div>
+<p>Coburg North is a highly competitive Melbourne market with five established operators. Fort Knox, Storage King, National Storage (two locations), and Kennards all compete in this corridor. KeepSafe Coburg pricing is not currently available through the online booking system. The market features aggressive promotional pricing from most competitors.</p></div>
+<div class="sentiment-section">
+<div class="section-title">KeepSafe Pricing</div>
+<div class="sentiment-text">KeepSafe Coburg pricing not currently available via online booking system (Storman page returns 404). Contact facility directly for rates.</div></div>
+<div class="sentiment-section">
+<div class="section-title">Pricing Comparison</div>
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div></div><table class="pricing-table">
+<thead>
+<tr>
+<th>Unit Size</th>
+<th>Area</th>
+<th>KeepSafe (N/A)</th>
+<th>Fort Knox Coburg</th><th>Kennards Preston</th><th>National Storage Brunswick</th><th>National Storage Coburg</th><th>Storage King Coburg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong></strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$159/mo <span class="promo-tag">50% off 3mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$189/mo <span class="promo-tag">1st 2mo free</span></td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-upper">U</span>$130/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$139/mo <span class="promo-tag">1st mo free</span></td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>9m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$267/mo <span class="promo-tag">50% off 3mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$349/mo <span class="promo-tag">1st 2mo free</span></td><td class="price-cell"><span class="floor-tag floor-upper">U</span>$245/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$260/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$239/mo <span class="promo-tag">1st mo free</span></td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>12m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$340/mo <span class="promo-tag">50% off 3mo</span></td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$494/mo <span class="promo-tag">50% off 3mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$616/mo <span class="promo-tag">1st 2mo free</span></td><td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$449/mo <span class="promo-tag">1st mo free</span></td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$350/mo <span class="promo-tag">25% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$340/mo <span class="promo-tag">25% off 1st mo</span></td><td class="price-cell">&mdash;</td>
+</tr>
+</tbody>
+</table></div>
+<div class="competitors-section">
+<div class="section-title">Competitor Landscape (5 competitors)</div>
+<div class="competitors-grid">
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://fortknoxselfstorage.com.au/locations/coburg/" rel="noopener noreferrer" target="_blank">Fort Knox Coburg</a></div>
+<div class="competitor-meta">
+<span class="competitor-rating">&#9733; 4.7</span>
+<span class="competitor-deal">50% off 3 Months</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$91-$494/mo</span></div>
+<div class="competitor-sentiment">Premium self-storage operator with strong brand and high Google ratings. Aggressive promotional pricing with up to 50% off first 3 months.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.kss.com.au/locations/vic/northern-melbourne/preston-storage" rel="noopener noreferrer" target="_blank">Kennards Preston</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">First 2 Months Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$189-$616/mo</span></div>
+<div class="competitor-sentiment">Major national brand with Preston location serving northern Melbourne. Premium pricing with first 2 months free promotion.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/" rel="noopener noreferrer" target="_blank">National Storage Brunswick</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$140-$350/mo</span></div>
+<div class="competitor-sentiment">National operator with Brunswick facility serving the inner northern suburbs corridor.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/" rel="noopener noreferrer" target="_blank">National Storage Coburg</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$130-$340/mo</span></div>
+<div class="competitor-sentiment">National operator with Coburg facility. Direct local competitor with published rates.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Coburg</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">1st Month Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$139-$449/mo</span></div>
+<div class="competitor-sentiment">Franchise operator serving Coburg North and Brunswick areas with first-month-free promotions.</div></div>
+</div></div></div></div></div>
 
 <!-- Exmouth, WA -->
 <div class="location-card" data-facility="exmouth" data-state="WA">
@@ -690,33 +509,42 @@
 <p>Exmouth represents an exceptional market opportunity. Only two competitors exist with minimal published pricing. Cape Storage and Coulson Brothers both operate on a quote-only basis, with Coulson specializing in large boat/caravan storage (not direct competition for standard units). KeepSafe can establish strong market presence with published pricing and transparent offerings in this underserved regional market.</p></div>
 <div class="sentiment-section">
 <div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $180 to $450/mo at Exmouth. Strong competitive advantage with published transparent pricing in underserved market.</div></div>
+<div class="sentiment-text">KeepSafe offers units from $180 to $450/mo at Exmouth. All ground floor access. Strong competitive advantage with published transparent pricing.</div></div>
 <div class="sentiment-section">
 <div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
 <thead>
 <tr>
 <th>Unit Size</th>
 <th>Area</th>
 <th>KeepSafe</th>
-<th>Cape Storage</th>
-<th>Coulson Brothers</th>
+<th>Cape Storage</th><th>Coulson Brothers</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$243/mo</td>
-<td class="price-cell price-quote">Quote only</td>
-<td class="price-cell price-quote">N/A (boat storage)</td>
+<td><strong>1.9x3.6m</strong></td>
+<td>6.84m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$180/mo</td>
+<td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
 </tr>
 <tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$380/mo</td>
-<td class="price-cell price-quote">Quote only</td>
-<td class="price-cell price-quote">N/A (boat storage)</td>
+<td><strong>3.5x2.3m</strong></td>
+<td>8.05m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$205/mo</td>
+<td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3.5x5.3m</strong></td>
+<td>18.55m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$380/mo</td>
+<td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3.5x6.4m</strong></td>
+<td>22.4m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$450/mo</td>
+<td class="price-cell">Quote only</td><td class="price-cell">Quote only</td>
 </tr>
 </tbody>
 </table></div>
@@ -726,17 +554,20 @@
 <div class="competitor-card">
 <div class="competitor-name"><a href="https://www.capestorageexmouth.com/" rel="noopener noreferrer" target="_blank">Cape Storage</a></div>
 <div class="competitor-meta">
+
 <span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Contact:</strong> 08 9949 1144</div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
 <div class="competitor-sentiment">No published pricing. Quote-only model. Local market presence in Exmouth.</div></div>
 <div class="competitor-card">
 <div class="competitor-name"><a href="https://coulsonbrothers.com.au/" rel="noopener noreferrer" target="_blank">Coulson Brothers</a></div>
 <div class="competitor-meta">
+
 <span class="competitor-deal">Specialty Storage</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Focus:</strong> Boat &amp; Caravan Storage</div>
-<div class="competitor-sentiment">Specializes in large boat/caravan units. POA pricing. Not direct competition for standard storage units.</div></div></div></div></div></div></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Specializes in large boat/caravan units. POA pricing. Not direct competition for standard storage units.</div></div>
+</div></div></div></div></div>
 
 <!-- Joondalup, WA -->
 <div class="location-card" data-facility="joondalup" data-state="WA">
@@ -745,381 +576,110 @@
 <div class="facility-name">Joondalup, WA</div>
 <div class="facility-meta">
 <span class="state-badge">WA</span>
-<span class="rating-badge">1 Major Competitor</span></div></div>
+<span class="rating-badge">2 Competitors</span></div></div>
 <div class="expand-icon">&#9660;</div></div>
 <div class="card-body">
 <div class="card-body-content">
 <div class="positioning-box">
 <div class="positioning-label">Competitive Positioning Summary</div>
-<p>Joondalup is a competitive metro market dominated by Storage King, which offers aggressive pricing ($104-750/mo range) with 1st Month FREE promo. Note: National Storage has no facility in Joondalup. KeepSafe should target middle-market units (9-18m&#178;) where Storage King's pricing shows the widest range, suggesting opportunity for value positioning. Focus on service differentiation beyond price.</p></div>
+<p>Joondalup has two major competitors: Storage King and National Storage. Both offer promotional pricing. Storage King leads with first-month-free deals, while National Storage offers 50% off first month on smaller units. KeepSafe is well-positioned with competitive ground-floor pricing across a wide range of unit sizes from 1m&sup2; to 21m&sup2;.</p></div>
 <div class="sentiment-section">
 <div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $27 to $579/mo at Joondalup. Current promo: 40% off first 3 months on upper level units. Competitive on mid-market sizes (9-18m&#178;).</div></div>
+<div class="sentiment-text">KeepSafe offers units from $27 to $579/mo at Joondalup. All ground floor access across 8 unit sizes.</div></div>
 <div class="sentiment-section">
 <div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference competitor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div></div><table class="pricing-table">
 <thead>
 <tr>
 <th>Unit Size</th>
 <th>Area</th>
 <th>KeepSafe</th>
-<th>Storage King Joondalup</th>
+<th>National Storage Joondalup</th><th>Storage King Joondalup</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>3x1.5m</strong></td>
-<td>4.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$96 <span style="font-size:0.85em;">sale $74</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$185 <span class="floor-tag floor-ground">G</span>$174<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>1x1m</strong></td>
+<td>1m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$27/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
 </tr>
 <tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$140 <span style="font-size:0.85em;">sale $140</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$229 <span class="floor-tag floor-ground">G</span>$294<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>1.5x1.5m</strong></td>
+<td>2.25m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$74/mo</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$60/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">&mdash;</td>
 </tr>
 <tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$214 <span style="font-size:0.85em;">sale $214</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$340 <span class="floor-tag floor-ground">G</span>$427<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>1.5x2.7m</strong></td>
+<td>4.05m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$94/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
 </tr>
 <tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$290 <span style="font-size:0.85em;">sale $290</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified">$595<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>1.5x3m</strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$96/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$165/mo <span class="promo-tag">1st mo free</span></td>
 </tr>
 <tr>
-<td><strong>9x3m</strong></td>
-<td>27m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$579/mo</td>
-<td class="price-cell price-verified">$750<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>3x2.8m</strong></td>
+<td>8.4m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$140/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong>3x4.5m</strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$214/mo</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$320/mo <span class="promo-tag">25% off 1st mo</span></td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$359/mo <span class="promo-tag">1st mo free</span></td>
+</tr>
+<tr>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$290/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$499/mo <span class="promo-tag">1st mo free</span></td>
+</tr>
+<tr>
+<td><strong>3.5x6m</strong></td>
+<td>21m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$579/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>6m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$153/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>9m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$259/mo <span class="promo-tag">1st mo free</span></td>
 </tr>
 </tbody>
 </table></div>
 <div class="competitors-section">
-<div class="section-title">Competitor Landscape (1 competitor)</div>
+<div class="section-title">Competitor Landscape (2 competitors)</div>
 <div class="competitors-grid">
 <div class="competitor-card">
-<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Joondalup</a></div>
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/joondalup/" rel="noopener noreferrer" target="_blank">National Storage Joondalup</a></div>
 <div class="competitor-meta">
-<span class="competitor-rating">&#9733; 4.7</span>
-<span class="competitor-reviews">150+ reviews</span>
-<span class="competitor-deal">1 Month Free</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$104-$750/mo</span></div>
-<div class="competitor-sentiment">Well-established brand with strong metro presence. Aggressive pricing across size range. 1st month free offer is standard.</div></div></div></div></div></div></div>
 
-<!-- Belmont, WA -->
-<div class="location-card" data-facility="belmont" data-state="WA">
-<div class="card-header" onclick="toggleCard(this)">
-<div class="card-title-section">
-<div class="facility-name">Belmont, WA</div>
-<div class="facility-meta">
-<span class="state-badge">WA</span>
-<span class="rating-badge">3+ Competitors</span></div></div>
-<div class="expand-icon">&#9660;</div></div>
-<div class="card-body">
-<div class="card-body-content">
-<div class="positioning-box">
-<div class="positioning-label">Competitive Positioning Summary</div>
-<p>Competitive Perth metro market with Storage King Belmont as main player ($130-580/mo range) plus National Storage Belmont and two quote-only operators. National Storage offers 25% off 1st month on small units and 50% off on 13.5m&#178; ground floor. KeepSafe should focus on mid-range units (9-18m&#178;) where pricing variance is highest. Service reliability and transparent rates are key differentiators against local competitors.</p></div>
-<div class="sentiment-section">
-<div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $81 to $521/mo at Belmont. Current promo: 40% off first 3 months on Level 2 upper units. Competitive on mid-range sizes with promotional pricing advantage.</div></div>
-<div class="sentiment-section">
-<div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
-<thead>
-<tr>
-<th>Unit Size</th>
-<th>Area</th>
-<th>KeepSafe</th>
-<th>Storage King Belmont</th>
-<th>National Storage Belmont</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>3x1.5m</strong></td>
-<td>4.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$112 <span style="font-size:0.85em;">sale $112</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$130 <span class="floor-tag floor-ground">G</span>$275<div class="promo-tag">1st mo FREE</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$202 <span style="font-size:0.85em;">sale $151</span><div class="promo-tag">25% off 1st mo</div></td>
-</tr>
-<tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$113 <span style="font-size:0.85em;">sale $113</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$325 <span class="floor-tag floor-ground">G</span>$335<div class="promo-tag">1st mo FREE</div></td>
-<td class="price-cell">&mdash;</td>
-</tr>
-<tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$161 <span style="font-size:0.85em;">sale $161</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$395 <span class="floor-tag floor-ground">G</span>$433<div class="promo-tag">1st mo FREE</div></td>
-<td class="price-cell">&mdash;</td>
-</tr>
-<tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$279 <span style="font-size:0.85em;">sale $279</span><div class="promo-tag">40% off 3mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$580 <span class="floor-tag floor-ground">G</span>$555<div class="promo-tag">1st mo FREE</div></td>
-<td class="price-cell">&mdash;</td>
-</tr>
-</tbody>
-</table></div>
-<div class="competitors-section">
-<div class="section-title">Competitor Landscape (4 competitors)</div>
-<div class="competitors-grid">
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$60-$320/mo</span></div>
+<div class="competitor-sentiment">National operator located at 125 Winton Road, Joondalup. Published pricing with up to 50% off first month on smaller units.</div></div>
 <div class="competitor-card">
-<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Belmont</a></div>
+<div class="competitor-name"><a href="https://www.storageking.com.au/collections/storage-joondalup" rel="noopener noreferrer" target="_blank">Storage King Joondalup</a></div>
 <div class="competitor-meta">
-<span class="competitor-deal">1 Month Free</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$130-$580/mo</span></div>
-<div class="competitor-sentiment">Major metro competitor. Strong presence with 1st month free across all sizes.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Belmont</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">25-50% off promos</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$151-$202/mo</span></div>
-<div class="competitor-sentiment">Limited size availability at this location. Aggressive promotional pricing on select units.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://airportselfstorage.com.au/" rel="noopener noreferrer" target="_blank">Airport Self Storage</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
-<div class="competitor-sentiment">Nearby option with quote-only model. 17 unit sizes available.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://www.cattsstorage.com.au/" rel="noopener noreferrer" target="_blank">Catts Storage</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
-<div class="competitor-sentiment">Local Rivervale operator. No standard rates published.</div></div></div></div></div></div></div>
 
-<!-- Bayswater, WA -->
-<div class="location-card" data-facility="bayswater" data-state="WA">
-<div class="card-header" onclick="toggleCard(this)">
-<div class="card-title-section">
-<div class="facility-name">Bayswater, WA</div>
-<div class="facility-meta">
-<span class="state-badge">WA</span>
-<span class="rating-badge">3+ Competitors</span></div></div>
-<div class="expand-icon">&#9660;</div></div>
-<div class="card-body">
-<div class="card-body-content">
-<div class="positioning-box">
-<div class="positioning-label">Competitive Positioning Summary</div>
-<p>Competitive metro market with three National Storage nearby locations (Bayswater, Embleton, Brunswick) plus Storage King Bassendean. National Storage offers aggressive 50% off promos on larger ground floor units ($252-$128 sale prices). Storage King has the widest range ($120-789/mo). KeepSafe should position on mid-range (9-15m&#178;) units where competitive offers are most aggressive, and emphasize service differentiation.</p></div>
-<div class="sentiment-section">
-<div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $54 to $494/mo at Bayswater. All units on Level 2 with published transparent pricing. Strong competitive positioning on mid-range units (9-21m&#178;).</div></div>
-<div class="sentiment-section">
-<div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
-<thead>
-<tr>
-<th>Unit Size</th>
-<th>Area</th>
-<th>KeepSafe</th>
-<th>National Storage Bayswater</th>
-<th>Storage King Bassendean</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>3x1.5m</strong></td>
-<td>4.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$180/mo</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$263 <span style="font-size:0.85em;">sale $197</span><div class="promo-tag">25% off 1st mo</div></td>
-<td class="price-cell price-verified">$120-$277</td>
-</tr>
-<tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$272/mo</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell price-verified">$337-$397<div class="promo-tag">1st mo FREE</div></td>
-</tr>
-<tr>
-<td><strong>3.75x4m</strong></td>
-<td>15m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$341/mo</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$505 <span style="font-size:0.85em;">sale $252</span><div class="promo-tag">50% off 1st mo</div></td>
-<td class="price-cell">&mdash;</td>
-</tr>
-<tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$341/mo</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell price-verified">$427-$659<div class="promo-tag">1st mo FREE</div></td>
-</tr>
-<tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$441/mo</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell price-verified">$225-$789</td>
-</tr>
-</tbody>
-</table></div>
-<div class="competitors-section">
-<div class="section-title">Competitor Landscape (4 competitors)</div>
-<div class="competitors-grid">
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Bayswater</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">50% off on ground floor</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$128-$263/mo</span></div>
-<div class="competitor-sentiment">Aggressive promos on ground floor units. Limited size range at this specific location.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Embleton</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">50% off promos</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$112-$319/mo</span></div>
-<div class="competitor-sentiment">Nearby NS location with small unit focus ($112 for 2.25m&#178;). Strong promo offers.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Bassendean</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">1 Month Free</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$120-$789/mo</span></div>
-<div class="competitor-sentiment">Wide price range indicates high size variety. 1st month free applies across all sizes.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://airportselfstorage.com.au/" rel="noopener noreferrer" target="_blank">Airport Self Storage</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
-<div class="competitor-sentiment">Alternative quote-based option in area.</div></div></div></div></div></div></div>
-
-<!-- Coburg North, VIC -->
-<div class="location-card" data-facility="coburg-north" data-state="VIC">
-<div class="card-header" onclick="toggleCard(this)">
-<div class="card-title-section">
-<div class="facility-name">Coburg North, VIC</div>
-<div class="facility-meta">
-<span class="state-badge">VIC</span>
-<span class="rating-badge">5 Competitors</span></div></div>
-<div class="expand-icon">&#9660;</div></div>
-<div class="card-body">
-<div class="card-body-content">
-<div class="positioning-box">
-<div class="positioning-label">Competitive Positioning Summary</div>
-<p>Most competitive location analyzed. Fort Knox Coburg offers aggressive 50% off 2-3 month promos with mid-range pricing ($137-$590/mo). Storage King has highest price ceiling ($1309 for 27m&#178;). National Storage (Coburg, Brunswick) and Kennards Preston all have published pricing. KeepSafe should target 9-13.5m&#178; segment where Fort Knox promos are significant and storage need is highest. Emphasize reliability vs. promo-dependent competitors.</p></div>
-<div class="sentiment-section">
-<div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe pricing not yet available online for this location. Contact (03) 8379 6200 for rates. Note: Facility not currently in active KeepSafe booking system.</div></div>
-<div class="sentiment-section">
-<div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
-<thead>
-<tr>
-<th>Unit Size</th>
-<th>Area</th>
-<th>KeepSafe</th>
-<th>Fort Knox Coburg</th>
-<th>Storage King Coburg</th>
-<th>National Storage Coburg</th>
-<th>Kennards Preston</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>3x1.5m</strong></td>
-<td>4.5m&#178;</td>
-<td class="price-cell">TBD</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$137 <span class="floor-tag floor-ground">G</span>$177<div class="promo-tag">50% off 2mo</div></td>
-<td class="price-cell price-verified">$110-$249</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$116 <span style="font-size:0.85em;">sale $87</span><div class="promo-tag">25% off 1st mo</div></td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$162</td>
-</tr>
-<tr>
-<td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell">TBD</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$191 <span class="floor-tag floor-ground">G</span>$218<div class="promo-tag">50% off 3mo</div></td>
-<td class="price-cell price-verified">$159-$394</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$395</td>
-</tr>
-<tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell">TBD</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$275 <span class="floor-tag floor-ground">G</span>$336<div class="promo-tag">50% off 3mo</div></td>
-<td class="price-cell price-verified">$315-$557</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$371 <span style="font-size:0.85em;">sale $185</span><div class="promo-tag">50% off 1st mo</div></td>
-<td class="price-cell">&mdash;</td>
-</tr>
-<tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell">TBD</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$350 <span class="floor-tag floor-ground">G</span>$590<div class="promo-tag">50% off 3mo</div></td>
-<td class="price-cell price-verified">$225-$867</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell">&mdash;</td>
-</tr>
-<tr>
-<td><strong>9x3m</strong></td>
-<td>27m&#178;</td>
-<td class="price-cell">TBD</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$682-$966<div class="promo-tag">50% off 3mo</div></td>
-<td class="price-cell price-verified">$867-$1309</td>
-<td class="price-cell">&mdash;</td>
-<td class="price-cell">&mdash;</td>
-</tr>
-</tbody>
-</table></div>
-<div class="competitors-section">
-<div class="section-title">Competitor Landscape (5 competitors)</div>
-<div class="competitors-grid">
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://fortknoxselfstorage.com.au/locations/coburg" rel="noopener noreferrer" target="_blank">Fort Knox Coburg</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">50% off 2-3 months</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$137-$966/mo</span></div>
-<div class="competitor-sentiment">Aggressive promotional pricing. Multiple floor options at each size. Strong mid-market competitor.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Coburg North</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">1 Month Free</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$110-$1309/mo</span></div>
-<div class="competitor-sentiment">Widest price range. Covers all size categories. Consistent 1st month free offer.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Coburg</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">25-50% off promos</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$87-$371/mo</span></div>
-<div class="competitor-sentiment">Limited size range at this specific location. Aggressive promotional pricing on smaller units.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://nationalstorage.com.au" rel="noopener noreferrer" target="_blank">National Storage Brunswick</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">25% off promo</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$154-$566/mo</span></div>
-<div class="competitor-sentiment">Nearby NS location. More limited size availability. Ground floor focus.</div></div>
-<div class="competitor-card">
-<div class="competitor-name"><a href="https://www.kss.com.au" rel="noopener noreferrer" target="_blank">Kennards Self Storage Preston</a></div>
-<div class="competitor-meta">
-<span class="competitor-deal">Ground floor focus</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$162-$562/mo</span></div>
-<div class="competitor-sentiment">Published pricing with ground floor units. Smaller size range but premium positioning with free forklifts and trolleys.</div></div></div></div></div></div></div>
+<span class="competitor-deal">1st Month Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$91-$499/mo</span></div>
+<div class="competitor-sentiment">Major franchise operator in Joondalup. First-month-free promotions with Shopify-based online booking. Strong brand presence.</div></div>
+</div></div></div></div></div>
 
 <!-- Redbank, QLD -->
 <div class="location-card" data-facility="redbank" data-state="QLD">
@@ -1128,71 +688,210 @@
 <div class="facility-name">Redbank, QLD</div>
 <div class="facility-meta">
 <span class="state-badge">QLD</span>
-<span class="rating-badge">1 Main Competitor</span></div></div>
+<span class="rating-badge">2 Competitors</span></div></div>
 <div class="expand-icon">&#9660;</div></div>
 <div class="card-body">
 <div class="card-body-content">
 <div class="positioning-box">
 <div class="positioning-label">Competitive Positioning Summary</div>
-<p>Growing regional market with only Storage King Redbank Plains as direct competitor. No National Storage presence nearby (nearest options are Springfield, Bundamba, Ipswich). Storage King's pricing spans $90-$966/mo across all sizes with 1st Month FREE. KeepSafe has opportunity to establish strong presence with transparent pricing and service differentiation in this less saturated market.</p></div>
+<p>Redbank has two competitors: Storage King Redbank Plains and National Storage Springfield (Augustine Heights). KeepSafe Redbank is the only location offering multiple access tiers (Level 1, Level 2, and Ground). Current 40% off for 2 months promotion makes KeepSafe highly competitive against both established operators.</p></div>
 <div class="sentiment-section">
 <div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $32 to $499/mo at Redbank. Current promo: 40% off first 2 months. Competitive advantage with transparent pricing and promotional offers across all unit sizes.</div></div>
+<div class="sentiment-text">KeepSafe Redbank offers units across three tiers: Level 1 (upper), Level 2 (upper), and Ground. Current promo: 40% off for 2 months on all units.</div></div>
 <div class="sentiment-section">
 <div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">L1</span> Level 1 (Upper)</div><div class="price-legend-item"><span class="floor-tag floor-upper">L2</span> Level 2 (Upper)</div></div><table class="pricing-table">
 <thead>
 <tr>
 <th>Unit Size</th>
 <th>Area</th>
 <th>KeepSafe</th>
-<th>Storage King Redbank Plains</th>
+<th>National Storage Springfield</th><th>Storage King Redbank Plains</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>3x1.5m</strong></td>
-<td>4.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$86 <span style="font-size:0.85em;">sale $86</span><div class="promo-tag">40% off 2mo</div></td>
-<td class="price-cell price-verified">$90-$205<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>1x1m</strong></td>
+<td>1m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L1</span>$54/mo <span class="promo-tag">40% off 2mo &rarr; $32</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong>1.5x1.5m</strong></td>
+<td>2.25m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L1</span>$116/mo <span class="promo-tag">40% off 2mo &rarr; $70</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong>2x2m</strong></td>
+<td>4m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L2</span>$151/mo <span class="promo-tag">40% off 2mo &rarr; $91</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong>1.5x3m</strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L2</span>$144/mo <span class="promo-tag">40% off 2mo &rarr; $86</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$155/mo <span class="promo-tag">1st mo free</span></td>
 </tr>
 <tr>
 <td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$135 <span style="font-size:0.85em;">sale $135</span><div class="promo-tag">40% off 2mo</div></td>
-<td class="price-cell price-verified">$211-$294<div class="promo-tag">1st mo FREE</div></td>
+<td>9m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L2</span>$225/mo <span class="promo-tag">40% off 2mo &rarr; $135</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$245/mo <span class="promo-tag">1st mo free</span></td>
 </tr>
 <tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$204 <span style="font-size:0.85em;">sale $204</span><div class="promo-tag">40% off 2mo</div></td>
-<td class="price-cell price-verified">$247-$389<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>3x4.3m</strong></td>
+<td>12.9m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L2</span>$340/mo <span class="promo-tag">40% off 2mo &rarr; $204</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
 </tr>
 <tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$257 <span style="font-size:0.85em;">sale $257</span><div class="promo-tag">40% off 2mo</div></td>
-<td class="price-cell price-verified">$267-$554<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L2</span>$428/mo <span class="promo-tag">40% off 2mo &rarr; $257</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell"><span class="floor-tag floor-ground">G</span>$415/mo <span class="promo-tag">1st mo free</span></td>
 </tr>
 <tr>
-<td><strong>9x3m</strong></td>
-<td>27m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-upper">U</span>$299 <span style="font-size:0.85em;">sale $299</span><div class="promo-tag">40% off 2mo</div></td>
-<td class="price-cell price-verified">$402-$966<div class="promo-tag">1st mo FREE</div></td>
+<td><strong>4.5x4.5m</strong></td>
+<td>20.25m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">L1</span>$499/mo <span class="promo-tag">40% off 2mo &rarr; $299</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong>3x10m</strong></td>
+<td>30m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$332/mo <span class="promo-tag">40% off 2mo &rarr; $199</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>3m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$145/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>5.25m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$207/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">&mdash;</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$274/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">&mdash;</td>
 </tr>
 </tbody>
 </table></div>
 <div class="competitors-section">
-<div class="section-title">Competitor Landscape (1 competitor)</div>
+<div class="section-title">Competitor Landscape (2 competitors)</div>
 <div class="competitors-grid">
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/" rel="noopener noreferrer" target="_blank">National Storage Springfield</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$145-$274/mo</span></div>
+<div class="competitor-sentiment">Located at Augustine Heights (8A Success Circuit). Nearest National Storage facility to Redbank Plains with published pricing and first-month promotions.</div></div>
 <div class="competitor-card">
 <div class="competitor-name"><a href="https://www.storageking.com.au" rel="noopener noreferrer" target="_blank">Storage King Redbank Plains</a></div>
 <div class="competitor-meta">
-<span class="competitor-rating">&#9733; 4.6</span>
-<span class="competitor-deal">1 Month Free</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-verified">$90-$966/mo</span></div>
-<div class="competitor-sentiment">Primary competitor. Standard Storage King offering with full size range. Growing area with development activity nearby.</div></div></div></div></div></div></div>
+
+<span class="competitor-deal">1st Month Free</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$115-$485/mo</span></div>
+<div class="competitor-sentiment">Franchise operator in Redbank Plains. First-month-free promotions. Direct local competitor.</div></div>
+</div></div></div></div></div>
+
+<!-- Waroona, WA -->
+<div class="location-card" data-facility="waroona" data-state="WA">
+<div class="card-header" onclick="toggleCard(this)">
+<div class="card-title-section">
+<div class="facility-name">Waroona, WA</div>
+<div class="facility-meta">
+<span class="state-badge">WA</span>
+<span class="rating-badge">Prices Updated</span></div></div>
+<div class="expand-icon">&#9660;</div></div>
+<div class="card-body">
+<div class="card-body-content">
+<div class="positioning-box">
+<div class="positioning-label">Competitive Positioning Summary</div>
+<p>Waroona is a smaller regional market with limited competition. Lock 'n' Store offers quote-only pricing, while National Storage Mandurah (nearby) has published rates and is offering 50% off first month promos across unit sizes. KeepSafe can differentiate with transparent pricing and competitive first-month offers to capture this underserved market.</p></div>
+<div class="sentiment-section">
+<div class="section-title">KeepSafe Pricing</div>
+<div class="sentiment-text">KeepSafe offers units from $133 to $499/mo at Waroona. All ground floor access across all size ranges (4.5m&sup2; to 30m&sup2;).</div></div>
+<div class="sentiment-section">
+<div class="section-title">Pricing Comparison</div>
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div></div><table class="pricing-table">
+<thead>
+<tr>
+<th>Unit Size</th>
+<th>Area</th>
+<th>KeepSafe</th>
+<th>National Storage Mandurah</th><th>Lock 'n' Store</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1.5x3m</strong></td>
+<td>4.5m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$199/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x3m</strong></td>
+<td>9m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$249/mo</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$324/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>2.4x5.9m</strong></td>
+<td>14.16m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$269/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$133/mo <span class="promo-tag">Hardstand</span><br><span class="floor-tag floor-ground">G</span>$408/mo <span class="promo-tag">Single Garage</span></td>
+<td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>6x5m</strong></td>
+<td>30m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$499/mo</td>
+<td class="price-cell">&mdash;</td><td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong></strong></td>
+<td>13.5m&sup2;</td>
+<td class="price-cell">&mdash;</td>
+<td class="price-cell"><span class="floor-tag floor-upper">U</span>$377/mo <span class="promo-tag">50% off 1st mo</span></td><td class="price-cell">Quote only</td>
+</tr>
+</tbody>
+</table></div>
+<div class="competitors-section">
+<div class="section-title">Competitor Landscape (2 competitors)</div>
+<div class="competitors-grid">
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://www.locknstore.com.au/" rel="noopener noreferrer" target="_blank">Lock 'n' Store</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">Quote based</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Multiple locations in Western Australia. No published pricing available.</div></div>
+<div class="competitor-card">
+<div class="competitor-name"><a href="https://nationalstorage.com.au/locations/mandurah/" rel="noopener noreferrer" target="_blank">National Storage Mandurah</a></div>
+<div class="competitor-meta">
+
+<span class="competitor-deal">50% off 1st Month</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-verified">$130-$377/mo</span></div>
+<div class="competitor-sentiment">Published pricing with aggressive first-month promotions. Nearest established competitor with transparent rates.</div></div>
+</div></div></div></div></div>
 
 <!-- Woolgoolga, NSW -->
 <div class="location-card" data-facility="woolgoolga" data-state="NSW">
@@ -1205,15 +904,15 @@
 <div class="expand-icon">&#9660;</div></div>
 <div class="card-body">
 <div class="card-body-content">
-<div class="positioning-box strong">
+<div class="positioning-box">
 <div class="positioning-label">Competitive Positioning Summary</div>
-<p>Exceptional market opportunity. Store Easy is the only identified competitor with quote-only pricing. Regional NSW coastal market has minimal self-storage presence. KeepSafe can establish dominant market position with published transparent pricing, reliable service, and customer-friendly approach. This location represents highest growth potential with lowest competitive intensity.</p></div>
+<p>Woolgoolga has minimal competition with only Store Easy as a local competitor. This represents a strong market position for KeepSafe with room to establish pricing leadership. Store Easy operates from woolgoolga area offering standard self-storage services.</p></div>
 <div class="sentiment-section">
 <div class="section-title">KeepSafe Pricing</div>
-<div class="sentiment-text">KeepSafe offers units from $139 to $459/mo at Woolgoolga. Strong market advantage with published transparent pricing in underserved regional market. Only competitor (Store Easy) operates quote-only model.</div></div>
+<div class="sentiment-text">KeepSafe offers units from $139 to $459/mo at Woolgoolga. All ground floor access.</div></div>
 <div class="sentiment-section">
 <div class="section-title">Pricing Comparison</div>
-<div class="price-legend"><div class="price-legend-item"><span class="floor-tag floor-upper">U</span> Upper Floor</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
+<div class="price-legend"><div class="price-legend-item"><span class="price-legend-swatch sw-g"></span> Reference pricing</div><div class="price-legend-item"><span class="floor-tag floor-ground">G</span> Ground Floor</div></div><table class="pricing-table">
 <thead>
 <tr>
 <th>Unit Size</th>
@@ -1224,22 +923,40 @@
 </thead>
 <tbody>
 <tr>
+<td><strong>1x2m</strong></td>
+<td>2m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$139/mo</td>
+<td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>1.7x3m</strong></td>
+<td>5.1m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$190/mo</td>
+<td class="price-cell">Quote only</td>
+</tr>
+<tr>
 <td><strong>3x3m</strong></td>
-<td>9m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$246/mo</td>
-<td class="price-cell price-quote">Quote only</td>
+<td>9m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$246/mo</td>
+<td class="price-cell">Quote only</td>
 </tr>
 <tr>
-<td><strong>4.5x3m</strong></td>
-<td>13.5m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$264/mo</td>
-<td class="price-cell price-quote">Quote only</td>
+<td><strong>2.7x6m</strong></td>
+<td>16.2m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$264/mo</td>
+<td class="price-cell">Quote only</td>
 </tr>
 <tr>
-<td><strong>6x3m</strong></td>
-<td>18m&#178;</td>
-<td class="price-cell price-verified"><span class="floor-tag floor-ground">G</span>$399/mo</td>
-<td class="price-cell price-quote">Quote only</td>
+<td><strong>3x6m</strong></td>
+<td>18m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$185/mo <span class="promo-tag">Hardstand</span><br><span class="floor-tag floor-ground">G</span>$399/mo <span class="promo-tag">Single Garage</span></td>
+<td class="price-cell">Quote only</td>
+</tr>
+<tr>
+<td><strong>3x7m</strong></td>
+<td>21m&sup2;</td>
+<td class="price-cell"><span class="floor-tag floor-ground">G</span>$459/mo</td>
+<td class="price-cell">Quote only</td>
 </tr>
 </tbody>
 </table></div>
@@ -1247,17 +964,25 @@
 <div class="section-title">Competitor Landscape (1 competitor)</div>
 <div class="competitors-grid">
 <div class="competitor-card">
-<div class="competitor-name"><a href="https://www.storeasy.com.au/" rel="noopener noreferrer" target="_blank">Store Easy</a></div>
+<div class="competitor-name"><a href="https://www.storeasy.com.au/" rel="noopener noreferrer" target="_blank">Store Easy Woolgoolga</a></div>
 <div class="competitor-meta">
-<span class="competitor-deal">Quote based</span></div>
-<div style="margin-bottom: 12px; font-size: 0.9em; color: #666;">
-<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
-<div class="competitor-sentiment">Only identified competitor. No published pricing. Regional coastal NSW market. Strong opportunity for market leadership with transparent pricing.</div></div></div></div></div></div></div>
 
-</div></div>
+<span class="competitor-deal">Quote based</span></div>
+<div style="margin-bottom:12px;font-size:0.9em;color:#666;">
+<strong>Pricing:</strong> <span class="price-quote">Quote only</span></div>
+<div class="competitor-sentiment">Local Woolgoolga storage operator. Limited online pricing information. Quote-based model.</div></div>
+</div></div></div></div></div>
+
+</div>
+</div>
+
+<div class="no-results hidden" id="noResults">
+<h3>No matching locations</h3>
+<p>Try a different search term or filter</p></div>
+
 <div class="footer">
 <div class="footer-content">
-<h3>Dashboard Methodology & Insights</h3>
+<h3>Dashboard Methodology &amp; Insights</h3>
 <p>This comprehensive competitor analysis dashboard evaluates KeepSafe's competitive positioning across 8 target Australian locations. Each location profile includes market dynamics, pricing benchmarking, and competitive landscape assessment.</p>
 <div class="methodology">
 <div class="methodology-section">
@@ -1265,7 +990,7 @@
 <ul>
 <li><strong>Published Pricing:</strong> Scraped from competitor websites and verified</li>
 <li><strong>Quote-Only Competitors:</strong> No published rates available</li>
-<li><strong>Floor Tags:</strong> U (Upper Floor), G (Ground Floor) indicate unit location tiers</li>
+<li><strong>Floor Tags:</strong> G (Ground), U (Upper), L1/L2 (Levels), DW (Driveway) indicate unit tiers</li>
 <li><strong>Promotional Offers:</strong> Current active offers as of April 17, 2026</li>
 </ul></div>
 <div class="methodology-section">
@@ -1285,81 +1010,41 @@
 <li><strong>Pricing Strategy:</strong> Most competitors use promotional pricing (1st month free or % off)</li>
 <li><strong>Transparent Pricing:</strong> KeepSafe's published rates vs. quote-only competitors = advantage</li>
 </ul></div></div>
-<p style="margin-top: 30px; opacity: 0.8; font-size: 0.9em;">
-                Generated for KeepSafe | Competitive Intelligence Dashboard | Current as of April 17, 2026
-            </p></div></div>
+<p style="margin-top:30px;opacity:0.6;font-size:0.85em">Generated for KeepSafe | Competitive Intelligence Dashboard | Current as of April 17, 2026</p>
+</div></div>
+
 <script>
-        function toggleCard(headerElement) {
-            const card = headerElement.closest('.location-card');
-            card.classList.toggle('expanded');
+function toggleCard(header) {
+    var card = header.closest('.location-card');
+    card.classList.toggle('expanded');
+}
+function expandAll() {
+    document.querySelectorAll('.location-card').forEach(function(c) { c.classList.add('expanded'); });
+}
+function collapseAll() {
+    document.querySelectorAll('.location-card').forEach(function(c) { c.classList.remove('expanded'); });
+}
+document.getElementById('searchInput').addEventListener('input', filterCards);
+document.getElementById('stateFilter').addEventListener('change', filterCards);
+function filterCards() {
+    var search = document.getElementById('searchInput').value.toLowerCase();
+    var state = document.getElementById('stateFilter').value;
+    var cards = document.querySelectorAll('.location-card');
+    var visible = 0;
+    cards.forEach(function(card) {
+        var text = card.textContent.toLowerCase();
+        var cardState = card.dataset.state;
+        var matchSearch = !search || text.indexOf(search) !== -1;
+        var matchState = !state || cardState === state;
+        if (matchSearch && matchState) {
+            card.style.display = '';
+            visible++;
+        } else {
+            card.style.display = 'none';
         }
-
-        function expandAll() {
-            document.querySelectorAll('.location-card').forEach(card => {
-                if (!card.classList.contains('hidden')) {
-                    card.classList.add('expanded');
-                }
-            });
-        }
-
-        function collapseAll() {
-            document.querySelectorAll('.location-card').forEach(card => {
-                card.classList.remove('expanded');
-            });
-        }
-
-        const searchInput = document.getElementById('searchInput');
-        const stateFilter = document.getElementById('stateFilter');
-
-        function filterCards() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const selectedState = stateFilter.value;
-            const cards = document.querySelectorAll('.location-card');
-            let visibleCount = 0;
-
-            cards.forEach(card => {
-                const facility = card.dataset.facility;
-                const state = card.dataset.state;
-                const text = card.textContent.toLowerCase();
-
-                const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-                const matchesState = selectedState === '' || state === selectedState;
-
-                if (matchesSearch && matchesState) {
-                    card.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-
-            // Show/hide no results message
-            let noResults = document.getElementById('noResults');
-            if (visibleCount === 0) {
-                if (!noResults) {
-                    noResults = document.createElement('div');
-                    noResults.id = 'noResults';
-                    noResults.className = 'no-results';
-                    noResults.innerHTML = '<h3>No results found</h3><p>Try adjusting your search or filters</p>';
-                    document.querySelector('.locations-grid').appendChild(noResults);
-                }
-            } else {
-                if (noResults) {
-                       noResults.remove();
-                }
-            }
-        }
-
-        searchInput.addEventListener('input', filterCards);
-        stateFilter.addEventListener('change', filterCards);
-
-document.querySelectorAll('.pricing-table th').forEach(th=>{
-th.style.cursor='pointer';
-th.addEventListener('click',function(){
-const t=this.closest('table'),i=Array.from(this.parentElement.children).indexOf(this);
-const h=this.dataset.hl==='1';
-t.querySelectorAll('tbody td:nth-child('+(i+1)+')').forEach(c=>{c.style.outline=h?'':'2px solid #1a73e8';c.style.outlineOffset=h?'':'-1px'});
-this.dataset.hl=h?'0':'1'})});
+    });
+    document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+}
 </script>
 </body>
 </html>
